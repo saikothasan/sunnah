@@ -6,19 +6,29 @@ import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useRouter } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { HadithList } from "@/components/hadith-list"
+
+interface SearchResult {
+  data: {
+    id: number
+    header: string
+    hadith_english: string
+    book: string
+    refno: string
+    bookName: string
+    chapterName: string
+  }[]
+}
 
 export function AdvancedSearch() {
   const [query, setQuery] = useState("")
   const [collection, setCollection] = useState("")
-  const router = useRouter()
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery<SearchResult>({
     queryKey: ["search", query, collection],
     queryFn: async () => {
-      if (!query || !collection) return null
+      if (!query || !collection) return { data: [] }
       const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/search?q=${encodeURIComponent(query)}`)
       if (!res.ok) throw new Error("Failed to fetch search results")
       return res.json()
@@ -53,7 +63,7 @@ export function AdvancedSearch() {
       </form>
       {isLoading && <p>Searching...</p>}
       {error && <p className="text-destructive">Error: {(error as Error).message}</p>}
-      {data && <HadithList collection={collection} searchResults={data} />}
+      {data && <HadithList collection={collection} searchResults={data.data} />}
     </div>
   )
 }
