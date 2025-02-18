@@ -5,12 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import Link from "next/link"
 
-interface HadithListProps {
-  collection: string
-  page?: number
-  searchResults?: any
-}
-
 interface HadithData {
   id: number
   header: string
@@ -21,8 +15,14 @@ interface HadithData {
   chapterName: string
 }
 
+interface HadithListProps {
+  collection: string
+  page?: number
+  searchResults?: HadithData[]
+}
+
 export function HadithList({ collection, page, searchResults }: HadithListProps) {
-  const { data, isLoading, error } = useQuery<{ data: HadithData | HadithData[] }>({
+  const { data, isLoading, error } = useQuery<{ data: HadithData[] }>({
     queryKey: ["hadiths", collection, page],
     queryFn: async () => {
       if (searchResults) return { data: searchResults }
@@ -60,7 +60,7 @@ export function HadithList({ collection, page, searchResults }: HadithListProps)
     )
   }
 
-  const hadiths = Array.isArray(data?.data) ? data?.data : data?.data ? [data.data] : []
+  const hadiths = searchResults || data?.data || []
 
   if (hadiths.length === 0) {
     return (
