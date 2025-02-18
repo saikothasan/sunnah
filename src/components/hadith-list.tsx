@@ -34,10 +34,10 @@ export function HadithList({ collection, page = 1, searchResults }: HadithListPr
         if (!Array.isArray(data.data)) {
           return { data: [data.data] }
         }
-        return data
+        return data as { data: HadithData[] }
       } catch (error) {
         console.error("Error fetching hadiths:", error)
-        throw new Error("Failed to fetch hadiths")
+        throw error
       }
     },
     enabled: !searchResults && !!collection,
