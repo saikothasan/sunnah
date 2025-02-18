@@ -1,6 +1,6 @@
 @tailwind base;
 @tailwind components;
-@tailwind components;
+@tailwind utilities;
 
 @layer base {
   :root {
@@ -79,4 +79,3 @@
   font-family: "Amiri", serif;
   direction: rtl;
 }
-
