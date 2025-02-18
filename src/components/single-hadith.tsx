@@ -26,12 +26,18 @@ interface HadithData {
 
 export function SingleHadith({ collection, number }: SingleHadithProps) {
   const [isArabicVisible, setIsArabicVisible] = useState(false)
+
   const { data, isLoading, error } = useQuery<{ data: HadithData }>({
     queryKey: ["hadith", collection, number],
     queryFn: async () => {
-      const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/${number}`)
-      if (!res.ok) throw new Error("Failed to fetch hadith")
-      return res.json()
+      try {
+        const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/${number}`)
+        if (!res.ok) throw new Error("Failed to fetch hadith")
+        return res.json()
+      } catch (error) {
+        console.error("Error fetching hadith:", error)
+        throw new Error("Failed to fetch hadith")
+      }
     },
   })
 
@@ -48,27 +54,17 @@ export function SingleHadith({ collection, number }: SingleHadithProps) {
     )
   }
 
-  if (error) {
+  if (error || !data?.data) {
     return (
       <Card>
         <CardContent className="flex items-center justify-center h-40 text-destructive">
-          Error loading hadith. Please try again.
+          {error ? (error as Error).message : "No hadith found."}
         </CardContent>
       </Card>
     )
   }
 
-  const hadith = data?.data
-
-  if (!hadith) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-40 text-muted-foreground">
-          No hadith found.
-        </CardContent>
-      </Card>
-    )
-  }
+  const hadith = data.data
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href)
