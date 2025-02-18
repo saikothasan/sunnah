@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Bookmark } from "lucide-react"
 import { useState } from "react"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from "@/hooks/use-toast"
 
 interface BookmarkButtonProps {
   hadithId: string
