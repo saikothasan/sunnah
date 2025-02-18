@@ -3,6 +3,8 @@ import { HadithNavigation } from "@/components/hadith-navigation"
 import type { Metadata } from "next"
 import { siteConfig } from "@/lib/constants"
 
+export const runtime = "edge"
+
 interface HadithPageProps {
   params: {
     collection: string
