@@ -19,11 +19,11 @@ export const metadata = {
   keywords: ["Hadith", "Islam", "Prophet Muhammad", "Islamic Studies", "Sunnah"],
   authors: [
     {
-      name: "Your Name",
-      url: "https://yourwebsite.com",
+      name: "Al Hadith",
+      url: "https://al-hadith.pages.dev",
     },
   ],
-  creator: "Your Name",
+  creator: "Saikothasan",
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -45,7 +45,7 @@ export const metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     images: [siteConfig.ogImage],
-    creator: "@yourtwitterhandle",
+    creator: "@saikothasan",
   },
   icons: {
     icon: "/favicon.ico",
@@ -53,7 +53,7 @@ export const metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: `${siteConfig.url}/site.webmanifest`,
-    generator: 'v0.dev'
+    generator: 'github'
 }
 
 export default function RootLayout({
