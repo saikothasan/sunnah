@@ -6,7 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Book, Share2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import { toast } from "@/components/ui/use-toast"
+import { toast } from "@/hooks/use-toast"
 import { BookmarkButton } from "@/components/bookmark-button"
 
 interface SingleHadithProps {
