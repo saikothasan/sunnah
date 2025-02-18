@@ -29,12 +29,16 @@ export function HadithList({ collection, page = 1, searchResults }: HadithListPr
       try {
         const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/${page}`)
         if (!res.ok) throw new Error("Failed to fetch hadiths")
-        const data = await res.json()
-        // Handle single hadith response
-        if (!Array.isArray(data.data)) {
-          return { data: [data.data] }
+        const fetchedData = await res.json()
+        if (typeof fetchedData === "object" && fetchedData !== null && "data" in fetchedData) {
+          const hadithData = fetchedData.data
+          if (Array.isArray(hadithData)) {
+            return { data: hadithData as HadithData[] }
+          } else if (typeof hadithData === "object" && hadithData !== null) {
+            return { data: [hadithData as HadithData] }
+          }
         }
-        return data as { data: HadithData[] }
+        throw new Error("Invalid data structure received from API")
       } catch (error) {
         console.error("Error fetching hadiths:", error)
         throw error
