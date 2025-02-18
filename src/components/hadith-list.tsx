@@ -21,16 +21,26 @@ interface HadithListProps {
   searchResults?: HadithData[]
 }
 
-export function HadithList({ collection, page, searchResults }: HadithListProps) {
+export function HadithList({ collection, page = 1, searchResults }: HadithListProps) {
   const { data, isLoading, error } = useQuery<{ data: HadithData[] }>({
     queryKey: ["hadiths", collection, page],
     queryFn: async () => {
       if (searchResults) return { data: searchResults }
-      const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/${page || 1}`)
-      if (!res.ok) throw new Error("Failed to fetch hadiths")
-      return res.json()
+      try {
+        const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/${page}`)
+        if (!res.ok) throw new Error("Failed to fetch hadiths")
+        const data = await res.json()
+        // Handle single hadith response
+        if (!Array.isArray(data.data)) {
+          return { data: [data.data] }
+        }
+        return data
+      } catch (error) {
+        console.error("Error fetching hadiths:", error)
+        throw new Error("Failed to fetch hadiths")
+      }
     },
-    enabled: !searchResults,
+    enabled: !searchResults && !!collection,
   })
 
   if (isLoading) {
@@ -85,7 +95,7 @@ export function HadithList({ collection, page, searchResults }: HadithListProps)
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-2">{hadith.header}</p>
-            <p className="line-clamp-3">{hadith.hadith_english}</p>
+            <p className="line-clamp-3 whitespace-pre-line">{hadith.hadith_english}</p>
             <Link
               href={`/collections/${collection}/${hadith.id}`}
               className="text-primary hover:underline text-sm mt-2 inline-block"
