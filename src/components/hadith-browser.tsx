@@ -15,10 +15,20 @@ const collections = [
   { id: "tirmidhi", name: "Jami at-Tirmidhi" },
 ]
 
+interface HadithData {
+  id: number
+  header: string
+  hadith_english: string
+  book: string
+  refno: string
+  bookName: string
+  chapterName: string
+}
+
 export function HadithBrowser() {
   const [collection, setCollection] = useState("bukhari")
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<{ data: HadithData }>({
     queryKey: ["hadith", collection],
     queryFn: async () => {
       const res = await fetch(`https://en-hadith-api.vercel.app/${collection}/1`)
@@ -53,19 +63,21 @@ export function HadithBrowser() {
           <CardContent className="flex items-center justify-center min-h-[300px] text-destructive">
             Error loading hadith. Please try again.
           </CardContent>
-        ) : data ? (
+        ) : data && data.data ? (
           <>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Book className="h-5 w-5" />
-                Hadith #{data.hadithNumber}
+                Hadith #{data.data.refno}
               </CardTitle>
-              <CardDescription>Narrated by {data.narrator}</CardDescription>
+              <CardDescription>Narrated by {data.data.header}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <p className="text-lg leading-relaxed">{data.text}</p>
-                {data.chapter && <p className="text-sm text-muted-foreground">Chapter: {data.chapter}</p>}
+                <p className="text-lg leading-relaxed">{data.data.hadith_english}</p>
+                {data.data.chapterName && (
+                  <p className="text-sm text-muted-foreground">Chapter: {data.data.chapterName}</p>
+                )}
               </div>
             </CardContent>
           </>
